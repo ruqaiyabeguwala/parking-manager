@@ -1,0 +1,32 @@
+{
+  "name": "parking-management",
+  "version": "1.0.0",
+  "description": "an application made to manage car parking ",
+  "main": "server.js",
+  "scripts": {
+    "test": "npm run test",
+    "start": "node server.js",
+    "server": "nodemon server",
+    "client": "npm start --prefix client",
+    "dev": "concurrently --kill-others-on-fail \" npm run server \" \" npm run client \""
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "Ruqaiya Beguwala",
+  "license": "ISC",
+  "homepage": "",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "concurrently": "^5.3.0",
+    "config": "^3.3.1",
+    "cookie-session": "^1.4.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongoose": "^5.10.0",
+    "nodemon": "^2.0.4",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0"
+  }
+}
