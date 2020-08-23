@@ -2,12 +2,17 @@ import {
   GET_SPACE,
   BOOK_VEHICLE,
   SORT_SPACE,
+  SORT_SPACE_FAIL,
   GET_SPACE_FAIL,
   BOOK_VEHICLE_FAIL,
   RELEASE_VEHICLE,
   RELEASE_VEHICLE_FAIL,
   FILTER_SPACE,
   FILTER_SPACE_FAIL,
+  INIT_SPACE,
+  INIT_SPACE_FAIL,
+  GET_REPORT,
+  GET_REPORT_FAIL
 } from "./types";
 import axios from "axios";
 import { setAlert } from "./index";
@@ -85,12 +90,22 @@ export const releaseVehicle = (id) => async (dispatch) => {
 
 export const sortSpace = (type) => async (dispatch) => {
   try {
+    const res = await axios.get("/vehicle/sort");
     dispatch({
       type: SORT_SPACE,
-      payload:type
+      payload:res.data
     });
   } catch (err) {
     console.error(err.response);
+    if (err.response.data) {
+      err.response.data.errors.forEach((err) => {
+        dispatch(setAlert(err.msg, "danger"));
+      });
+      dispatch({
+        type: SORT_SPACE_FAIL,
+        payload: { msg: err.response.statusText, type: err.response.status },
+      });
+    }
   }
 };
 export const filterSpace = (type) => async (dispatch) => {
@@ -104,6 +119,55 @@ export const filterSpace = (type) => async (dispatch) => {
     console.error(err);
     dispatch({
       type: FILTER_SPACE_FAIL,
+    });
+  }
+};
+
+
+export const initSpace = () => async (dispatch) => {
+  try {
+    
+    const res = await axios.post("/vehicle/init");
+    dispatch({
+      type: INIT_SPACE,
+      payload:res.data
+    });
+    dispatch(setAlert("Initialized successfully", "Success"));
+  } catch (err) {
+    console.error(err.response);
+    //   const errors=err.response.data.errors;
+    if (err.response.data) {
+      err.response.data.errors.forEach((err) => {
+        dispatch(setAlert(err.msg, "danger"));
+      });
+    }
+    dispatch({
+      type: INIT_SPACE_FAIL,
+      payload: { msg: err.response.statusText, type: err.response.status },
+    });
+  }
+};
+
+
+export const getReport = () => async (dispatch) => {
+  try {
+    
+    const res = await axios.get("/vehicle/report");
+    dispatch({
+      type: GET_REPORT,
+      payload:res.data
+    });
+  } catch (err) {
+    console.error(err.response);
+    //   const errors=err.response.data.errors;
+    if (err.response.data) {
+      err.response.data.errors.forEach((err) => {
+        dispatch(setAlert(err.msg, "danger"));
+      });
+    }
+    dispatch({
+      type: GET_REPORT_FAIL,
+      payload: { msg: err.response.statusText, type: err.response.status },
     });
   }
 };

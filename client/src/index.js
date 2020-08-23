@@ -12,6 +12,7 @@ import Dashboard from "./components/dashboard"
 import rootReducer from "./reducers/index";
 import App from "./App";
 import Alert from "./components/alert"
+import Report from "./components/report";
 //import {sessionService} from "redux-react-session"
 
 const store = createStore(
@@ -24,6 +25,7 @@ ReactDOM.render(
     <Alert/>
     <HashRouter>
        <Route exact path="/dashboard" component={Dashboard} />
+       <Route exact path="/report" component={Report} />
       <Route exact path="/" component={Login} />
     </HashRouter>
   </Provider>,

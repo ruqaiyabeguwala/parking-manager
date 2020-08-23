@@ -14,7 +14,7 @@ import { connect } from "react-redux";
 import * as actions from "./../actions";
 
 const ModalExample = (props) => {
-  const { bookVehicle, ifVehicle, space, releaseVehicle } = props;
+  const { bookVehicle, ifVehicle, space, releaseVehicle,setAlert } = props;
 
   const [modal, setModal] = useState(false);
   const [regNumber, setRegNumber] = useState("");
@@ -22,14 +22,12 @@ const ModalExample = (props) => {
   const handleSubmit = () => {
     bookVehicle(space.title, regNumber, () => {
       toggle();
-      // forceUpdate()
     });
   };
   const handleRelease = () => {
     console.log(space.vehicle._id);
-    releaseVehicle(space.vehicle._id);
-    // forceUpdate()
-    //toggle()
+    releaseVehicle(space.vehicle._id)
+
   };
 
   return (

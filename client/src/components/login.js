@@ -1,10 +1,11 @@
 import React from "react";
-import { Form, Button, Input, FormGroup } from "reactstrap";
+import { Form, Button, Input, FormGroup ,Row,Col,} from "reactstrap";
 import { Field, reduxForm } from "redux-form";
 import { connect } from "react-redux";
 import * as actions from "./../actions/index";
 import { Redirect } from "react-router";
 import "bootstrap/dist/css/bootstrap.min.css"
+import park from "./../assets/img/park.jpg"
 
 const handleInput = (field) => {
   return (
@@ -49,11 +50,11 @@ const Login = ({
           minHeight: "550px",
         }}
       >
-        <div className="row" style={{ marginTop:"100px",padding:"40px" }}>
-            <div className="col-sm-6">
-
-            </div>
-            <div className="col-sm-6">
+        <Row style={{ padding:"40px" }}>
+            <Col md={6}>
+                <img src={park} width="100%" height="470px"/>
+            </Col >
+            <Col md={6} style={{marginTop:"100px",}}>
           <Form
             onSubmit={handleSubmit((values) => {
                console.log(values)
@@ -76,10 +77,10 @@ const Login = ({
               className="form-control"
               required
             />
-            <Button disabled={pristine || submitting || invalid}>Login</Button>
+            <Button className="btn btn-info" disabled={pristine || submitting || invalid}>Login</Button>
           </Form>
-          </div>
-        </div>
+          </Col>
+        </Row>
        
       </div>
   );
