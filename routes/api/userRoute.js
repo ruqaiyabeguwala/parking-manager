@@ -47,4 +47,13 @@ router.get("/api/get_user",(req,res)=>{
         res.json(req.user)
       })
 
+
+      router.get("/logout", (req, res) => {
+        //req.logOut();
+        //req.session = null;
+        res.clearCookie("express:sess");
+        res.redirect("/#/");
+       // res.send("logged - out")
+      });
+
 module.exports=router

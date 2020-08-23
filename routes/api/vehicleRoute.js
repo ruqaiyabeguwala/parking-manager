@@ -6,29 +6,37 @@ const Zone= require("./../../models/parking_zone")
 const passport= require("passport")
 const auth= require("./../../middleware/auth");
 const Vehicle_parking = require("./../../models/Vehicle_parking");
+const checkType = require("../../middleware/checkType");
 
+
+let sortAlphaNum = (a, b) =>a.localeCompare(b, "en", { numeric: true });
 //@route /vehicle/init
 //@desc init parking
-router.post("/init",auth,async (req,res)=>{
+router.post("/init",auth,checkType,async (req,res)=>{
     try{
+        let spaceCreated=[];
         await Vehicle.deleteMany({})
        await Zone.deleteMany({})
          await Space.deleteMany({})
         let zoneArr=['A','B','C'];
-        zoneArr.map(async zone=>{
-           const newZone= new Zone({
+        await Promise.all(zoneArr.map(async zone=>{
+            console.log("run")
+           newZone= new Zone({
                title:zone
            });
-         const zoneCreated=  await newZone.save()
+          let zoneCreated=await newZone.save()
          for(let i=1;i<=10;i++){
-             const newSpace= new Space({
+             newSpace= new Space({
                  title:zone.concat(i),
                  zone_id:zoneCreated._id
              })
-             await newSpace.save()
+            // console.log("old",newSpace)
+           let temp= await newSpace.save()
+           spaceCreated.push(temp)
             }
-        })
-        return res.json("Initialized successfully")
+
+        }))
+       return res.status(200).json(spaceCreated)
     }
     catch(err){
         console.log(err)
@@ -40,7 +48,7 @@ router.post("/init",auth,async (req,res)=>{
 
 //@route /vehicle/book
 //@desc book a vehicle
-router.put("/book",auth,async (req,res)=>{
+router.put("/book",auth,checkType,async (req,res)=>{
     try{
         const {space,reg_no} = req.body;
         
@@ -75,7 +83,7 @@ return res.json(spaceRes)
 
 //@route /vehicle/release
 //@desc release a vehicle
-router.put("/release",auth, async (req,res)=>{
+router.put("/release",auth,checkType, async (req,res)=>{
 try{
 const {id}=req.body;
 const vehicle = await Vehicle_parking.findById(id);
@@ -97,9 +105,9 @@ catch(err){
 })
 //@route /vehicle/space
 //@desc get all parking spaces and its vehicle details
-router.get("/space",async (req,res)=>{
+router.get("/space",auth,async (req,res)=>{
     try{
-    const space =await Space.find({release:null}).populate('vehicle');
+    const space =await Space.find().populate('vehicle');
     return res.json(space);
 }
 catch(err){
@@ -111,9 +119,33 @@ catch(err){
 
 //@route /vehicle/report
 //@desc get report for vehicles
-router.get("/report", async (req, res) => {
+router.get("/report",auth, async (req, res) => {
     try {
-        const space = await Space.find({ release: null }).populate('vehicle');
+let result=[];    
+  const spaces= await Space.find().populate("zone_id");
+  await Promise.all(spaces.map(async s=>{   
+    let r= await Vehicle.find({space_id:s.id})
+   let temp ={zone:s.zone_id.title,space:s.title,total:r.length,booked:!!s.vehicle}
+result.push(temp)
+  
+    }) ) 
+
+  res.json(result.sort((a,b)=>sortAlphaNum(a.space,b.space)))
+      
+    }
+    catch (err) {
+        console.log(err)
+        return res.status(500).json({ errors: [err, { msg: "Unable to fetch report" }] })
+    }
+})
+
+
+//@route /vehicle/sort
+//@desc get report for vehicles
+router.get("/sort", async (req, res) => {
+    try {
+        let space = await Space.find().populate('vehicle')
+         space.sort((a,b)=>sortAlphaNum(a.title,b.title));
         return res.json(space);
     }
     catch (err) {
