@@ -50,9 +50,10 @@ const Login = ({
           minHeight: "550px",
         }}
       >
+        <h1 style={{textAlign:"center",color:"#472d1e",marginTop:"20px"}}>Welcome to Parking mania!</h1>
         <Row style={{ padding:"40px" }}>
             <Col md={6}>
-                <img src={park} width="100%" height="470px"/>
+                <img src={park} width="100%" height="450px"/>
             </Col >
             <Col md={6} style={{marginTop:"100px",}}>
           <Form
@@ -77,7 +78,7 @@ const Login = ({
               className="form-control"
               required
             />
-            <Button className="btn btn-info" disabled={pristine || submitting || invalid}>Login</Button>
+            <Button className="btn btn-danger" disabled={pristine || submitting || invalid}>Login</Button>
           </Form>
           </Col>
         </Row>
